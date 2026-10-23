@@ -1,7 +1,7 @@
 # scraping.rakuten
 
 ## 概要
-楽天ウェブサービスの商品検索API（IchibaItem/Search/20220601）で複数キーワードを検索し、結果をGoogleスプレッドシートに追記するツールです。
+楽天ウェブサービスの商品検索API（IchibaItem/Search/20260701）で複数キーワードを検索し、結果をGoogleスプレッドシートに追記するツールです。
 
 取得項目：キーワード / 商品名 / 価格 / レビュー数 / ショップ名 / 商品URL / 取得日時
 
@@ -11,7 +11,7 @@
 ## 1. 楽天ウェブサービスのアプリID取得
 1. [Rakuten Developers](https://webservice.rakuten.co.jp/) に楽天会員でログイン
 2. 「アプリID発行」からアプリ名・URLなどを入力して登録
-3. 発行された **アプリID（applicationId）** を控える
+3. 発行された **アプリケーションID** と **アクセスキー** を控える
 
 ## 2. Google Cloud でサービスアカウント作成〜JSONキー発行
 1. [Google Cloud Console](https://console.cloud.google.com/) でプロジェクトを作成（既存でも可）
@@ -35,7 +35,8 @@ cp .env.example .env
 
 | 変数 | 内容 |
 |---|---|
-| `RAKUTEN_APP_ID` | 楽天アプリID |
+| `RAKUTEN_APP_ID` | 楽天アプリケーションID |
+| `RAKUTEN_ACCESS_KEY` | 楽天アクセスキー（`pk_` で始まる） |
 | `SPREADSHEET_ID` | 書き込み先スプレッドシートID |
 | `SHEET_NAME` | シート名（存在しなければヘッダー付きで自動作成。初期値：価格収集） |
 | `SERVICE_ACCOUNT_JSON` | サービスアカウントJSONのパス |
