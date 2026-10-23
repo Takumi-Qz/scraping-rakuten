@@ -3,6 +3,7 @@
 import os
 import time
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import gspread
 import requests
@@ -44,7 +45,7 @@ def fetch_rakuten(keyword: str, hits: int = 30) -> list[list]:
         raise RuntimeError(f"楽天API HTTP {res.status_code}: {res.text[:200]}")
     items = res.json().get("Items", [])
 
-    fetched_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    fetched_at = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
     return [
         [
             keyword,
