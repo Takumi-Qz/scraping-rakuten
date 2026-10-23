@@ -79,3 +79,34 @@ python main.py
 - 実行のたびに行が **追記** されます（重複除去はしません）
 - 1キーワードあたりの取得件数は最大30件（`hits` の上限）です
 - 楽天APIの仕様変更（認証方式など）で401/403になる場合は、Rakuten Developers の最新ドキュメントを確認してください
+
+## GitHub Actions で毎日自動実行
+`.github/workflows/daily.yml` により、毎日 **9:00 JST**（0:00 UTC）に `main.py` が実行されます。
+※ GitHub の混雑状況により数分〜数十分遅れることがあります。
+
+### Secrets の登録
+1. GitHub のリポジトリページ →「Settings」→「Secrets and variables」→「Actions」
+2. 「New repository secret」で以下を1つずつ登録（Name / Secret）
+
+| Name | 値 |
+|---|---|
+| `RAKUTEN_APP_ID` | 楽天アプリケーションID |
+| `RAKUTEN_ACCESS_KEY` | 楽天アクセスキー |
+| `SPREADSHEET_ID` | スプレッドシートID |
+| `SHEET_NAME` | `価格収集` |
+| `SLACK_WEBHOOK_URL` | Slack Webhook URL（通知しないなら空でも可。未登録だと通知スキップ） |
+| `SERVICE_ACCOUNT_JSON` | `service_account.json` の **中身全体**（`{` から `}` までをそのまま貼り付け） |
+
+ターミナルから登録する場合（GitHub CLI）：
+```bash
+gh secret set RAKUTEN_APP_ID
+gh secret set RAKUTEN_ACCESS_KEY
+gh secret set SPREADSHEET_ID
+gh secret set SHEET_NAME --body "価格収集"
+gh secret set SLACK_WEBHOOK_URL
+gh secret set SERVICE_ACCOUNT_JSON < service_account.json
+```
+（値を引数で渡さないものは、実行後に入力を求められます）
+
+### 手動実行
+リポジトリの「Actions」タブ →「daily」→「Run workflow」

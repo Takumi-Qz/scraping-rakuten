@@ -1,0 +1,42 @@
+name: daily
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 毎日 9:00 JST（= 0:00 UTC）
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore .env and service_account.json
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          SHEET_NAME: ${{ secrets.SHEET_NAME }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SERVICE_ACCOUNT_JSON_CONTENT: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          printenv SERVICE_ACCOUNT_JSON_CONTENT > service_account.json
+          {
+            echo "RAKUTEN_APP_ID=$RAKUTEN_APP_ID"
+            echo "RAKUTEN_ACCESS_KEY=$RAKUTEN_ACCESS_KEY"
+            echo "SPREADSHEET_ID=$SPREADSHEET_ID"
+            echo "SHEET_NAME=$SHEET_NAME"
+            echo "SERVICE_ACCOUNT_JSON=service_account.json"
+            echo "SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL"
+          } > .env
+
+      - name: Run
+        run: python main.py
